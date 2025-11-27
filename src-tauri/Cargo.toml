@@ -10,14 +10,15 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = ["macos-private-api"] }
-# Removed unused dependency: tauri-plugin-shell = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 open = "5"
 dirs = "5"
 sysinfo = "0.30"
 base64 = "0.21"
+lazy_static = "1.4"
 
+# This section was missing in my previous message:
 [lib]
 name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]

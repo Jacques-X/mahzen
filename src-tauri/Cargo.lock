@@ -1706,6 +1706,7 @@ version = "0.0.0"
 dependencies = [
  "base64 0.21.7",
  "dirs 5.0.1",
+ "lazy_static",
  "open",
  "serde",
  "serde_json",

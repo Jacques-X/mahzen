@@ -2,7 +2,7 @@ use std::fs;
 use std::process::Command;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
-use sysinfo::Disks;
+use sysinfo::{Disks, System, Pid}; 
 use base64::{Engine as _, engine::general_purpose};
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -55,8 +55,29 @@ struct FileTypeBreakdown {
     other: u64,
 }
 
+#[derive(serde::Serialize, Debug, Clone)]
+struct ProcessInfo {
+    pid: u32,
+    name: String,
+    cpu_usage: f32,
+    memory: u64,
+}
+
+#[derive(serde::Serialize, Debug, Clone)]
+struct SystemStats {
+    cpu_usage: f32,
+    total_memory: u64,
+    used_memory: u64,
+    top_processes: Vec<ProcessInfo>,
+}
+
 // Global cache for folder statistics
 static STATS_CACHE: Mutex<Option<HashMap<String, FolderStats>>> = Mutex::new(None);
+
+// Global System instance
+lazy_static::lazy_static! {
+    static ref SYSTEM_INSTANCE: Mutex<System> = Mutex::new(System::new_all());
+}
 
 // --- Helper Functions ---
 
@@ -132,8 +153,6 @@ fn calculate_folder_stats_deep(path: &Path, stats: &mut FolderStats) {
             let entry_path = entry.path();
             let is_symlink = entry_path.is_symlink();
 
-            // Note: Hidden files are counted in stats (standard behavior)
-
             if let Ok(metadata) = entry.metadata() {
                 let extension = entry_path.extension().unwrap_or_default().to_string_lossy().to_string();
                 let is_bundle = extension == "app" || extension == "framework" || extension == "plugin";
@@ -167,6 +186,88 @@ fn calculate_folder_stats_deep(path: &Path, stats: &mut FolderStats) {
 }
 
 // --- Commands ---
+
+#[tauri::command]
+fn get_system_stats() -> Result<SystemStats, String> {
+    let mut sys = SYSTEM_INSTANCE.lock().map_err(|e| e.to_string())?;
+    
+    sys.refresh_cpu_usage();
+    sys.refresh_memory();
+    sys.refresh_processes(); 
+
+    let global_cpu = sys.global_cpu_info().cpu_usage();
+    let total_mem = sys.total_memory();
+    let used_mem = sys.used_memory();
+
+    let mut processes: Vec<ProcessInfo> = sys.processes().iter()
+        .map(|(pid, process)| ProcessInfo {
+            pid: pid.as_u32(),
+            name: process.name().to_string(), 
+            cpu_usage: process.cpu_usage(),
+            memory: process.memory(),
+        })
+        .collect();
+
+    processes.sort_by(|a, b| b.cpu_usage.partial_cmp(&a.cpu_usage).unwrap_or(std::cmp::Ordering::Equal));
+    
+    // Increased to 50 items so scrolling works
+    processes.truncate(50); 
+
+    Ok(SystemStats {
+        cpu_usage: global_cpu,
+        total_memory: total_mem,
+        used_memory: used_mem,
+        top_processes: processes,
+    })
+}
+
+#[tauri::command]
+fn kill_process(pid: u32) -> Result<(), String> {
+    let mut success = false;
+    
+    // Attempt 1: Try using sysinfo (Standard way)
+    {
+        if let Ok(mut sys) = SYSTEM_INSTANCE.lock() {
+            // Sysinfo generally expects usize for Pid on Unix
+            let sys_pid = Pid::from(pid as usize); 
+            
+            if let Some(process) = sys.process(sys_pid) {
+                success = process.kill();
+            }
+        }
+    }
+
+    if success {
+        return Ok(());
+    }
+
+    // Attempt 2: Native Force Kill (Fallback if permission denied or not in cache)
+    #[cfg(unix)]
+    {
+        let output = Command::new("kill")
+            .args(["-9", &pid.to_string()])
+            .output()
+            .map_err(|e| e.to_string())?;
+
+        if output.status.success() {
+            return Ok(());
+        }
+    }
+
+    #[cfg(windows)]
+    {
+        let output = Command::new("taskkill")
+            .args(["/F", "/PID", &pid.to_string()])
+            .output()
+            .map_err(|e| e.to_string())?;
+
+        if output.status.success() {
+            return Ok(());
+        }
+    }
+
+    Err("Failed to kill process".to_string())
+}
 
 #[tauri::command]
 fn get_quick_paths() -> Result<QuickPaths, String> {
@@ -357,6 +458,8 @@ fn open_file(path: String) -> Result<(), String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     load_cache_from_disk();
+    
+    let _ = SYSTEM_INSTANCE.lock().map(|mut s| s.refresh_all());
 
     thread::spawn(|| {
         if let Ok(paths) = get_quick_paths() {
@@ -377,7 +480,9 @@ pub fn run() {
             get_disk_stats,
             get_folder_stats,
             clear_stats_cache,
-            get_file_preview
+            get_file_preview,
+            get_system_stats,
+            kill_process
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
