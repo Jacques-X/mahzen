@@ -18,7 +18,8 @@ interface MainContentProps {
   iconCache: Record<string, string>;
 }
 
-export const MainContent = React.memo<MainContentProps>(({
+// REMOVED: React.memo wrapper
+export const MainContent = ({
   currentPath,
   files,
   viewMode,
@@ -30,7 +31,11 @@ export const MainContent = React.memo<MainContentProps>(({
   handleNavigate,
   handleOpenFile,
   iconCache,
-}) => {
+}: MainContentProps) => {
+  
+  // DEBUG: Check if MainContent is receiving the update
+  console.log("MainContent Path:", currentPath);
+
   return (
     <div className="flex-1 min-w-0 bg-[#F9FAFB] rounded-3xl shadow-sm border border-gray-200/60 flex flex-col overflow-hidden relative">
       <FileBrowserHeader
@@ -67,4 +72,4 @@ export const MainContent = React.memo<MainContentProps>(({
       </div>
     </div>
   );
-});
+};

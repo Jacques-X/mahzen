@@ -13,7 +13,7 @@ interface FileBrowserHeaderProps {
   handleNavigate: (path: string) => void;
 }
 
-export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
+export const FileBrowserHeader = ({
   currentPath,
   viewMode,
   setViewMode,
@@ -22,7 +22,12 @@ export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
   canGoBack,
   canGoForward,
   handleNavigate,
-}) => {
+}: FileBrowserHeaderProps) => {
+  
+  // Debug Log: Check your browser console!
+  // If this prints the OLD path when you click a folder, the bug is in MainContent/Parent.
+  console.log('Header received path:', currentPath);
+
   const [pathInput, setPathInput] = useState(currentPath);
 
   useEffect(() => {
@@ -62,7 +67,11 @@ export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
 
         <div className="flex-1 relative">
           <MapPin className="absolute left-3 top-2.5 text-gray-400" size={16} />
+          {/* KEY PROP ADDED HERE: 
+             This forces the input to re-render completely when currentPath changes.
+          */}
           <input
+            key={currentPath} 
             type="text"
             value={pathInput}
             onChange={(e) => setPathInput(e.target.value)}
@@ -97,4 +106,4 @@ export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
       </div>
     </div>
   );
-});
+};
