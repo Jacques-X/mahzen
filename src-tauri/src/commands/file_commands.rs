@@ -43,26 +43,3 @@ pub fn get_file_preview(path: String) -> Result<String, String> {
 pub fn open_file(path: String) -> Result<(), String> {
     open::that(path).map_err(|e| e.to_string())
 }
-
-#[tauri::command]
-pub fn debug_folder_stats(path: String) -> Result<String, String> {
-    let stats = get_stats_for_path(&path)?;
-    let breakdown_sum = stats.breakdown.documents 
-        + stats.breakdown.photos 
-        + stats.breakdown.videos 
-        + stats.breakdown.audio 
-        + stats.breakdown.apps 
-        + stats.breakdown.other;
-    
-    let debug_info = format!(
-        "Path: {}\nTotal Size: {}\nBreakdown Sum: {}\nDifference: {}\nFiles: {}\nFolders: {}",
-        path,
-        stats.total_size,
-        breakdown_sum,
-        (stats.total_size as i64) - (breakdown_sum as i64),
-        stats.file_count,
-        stats.folder_count
-    );
-    
-    Ok(debug_info)
-}
