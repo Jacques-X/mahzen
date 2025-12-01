@@ -32,6 +32,7 @@ export interface FolderStats {
     videos: number;
     audio: number;
     apps: number;
+    archives: number;
     other: number;
   };
 }

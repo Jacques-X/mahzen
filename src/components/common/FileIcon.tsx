@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, ImageIcon, Video, Music, FileText, File } from 'lucide-react';
+import { LayoutGrid, ImageIcon, Video, Music, FileText, File, FolderOpen } from 'lucide-react';
 import type { FileInfo } from '../../types';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, AUDIO_EXTENSIONS, DOCUMENT_EXTENSIONS } from '../../constants/fileTypes';
 
@@ -11,7 +11,7 @@ interface FileIconProps {
 
 export const FileIcon = React.memo<FileIconProps>(({ file, size, iconData }) => {
   if (file.is_dir) {
-    return <img src="/kaxxa.png" alt="Folder" style={{ width: size, height: size, objectFit: 'contain' }} />;
+    return <FolderOpen style={{ width: size, height: size, objectFit: 'contain' }} className="text-purple-600" />;
   }
 
   if (iconData) {
@@ -26,5 +26,5 @@ export const FileIcon = React.memo<FileIconProps>(({ file, size, iconData }) => 
   if (AUDIO_EXTENSIONS.includes(e)) return <Music size={size} className="text-pink-500" />;
   if (DOCUMENT_EXTENSIONS.includes(e)) return <FileText size={size} className="text-blue-500" />;
 
-  return <File size={size} className="text-gray-400" />;
+  return <File size={size} />;
 });

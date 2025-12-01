@@ -1,4 +1,3 @@
-import React from 'react';
 import { FileBrowserHeader } from '../file-browser/FileBrowserHeader';
 import { FileGrid } from '../file-browser/FileGrid';
 import { FileList } from '../file-browser/FileList';
@@ -37,7 +36,7 @@ export const MainContent = ({
   console.log("MainContent Path:", currentPath);
 
   return (
-    <div className="flex-1 min-w-0 bg-[#F9FAFB] rounded-3xl shadow-sm border border-gray-200/60 flex flex-col overflow-hidden relative">
+    <div className="flex-1 min-w-0 bg-[#F9FAFB] rounded-3xl shadow-xl border border-gray-200/60 flex flex-col overflow-hidden relative">
       <FileBrowserHeader
         currentPath={currentPath}
         viewMode={viewMode}

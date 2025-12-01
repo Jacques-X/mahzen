@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { RefreshCw, HardDrive, Cloud, FileText, Image as ImageIcon, Video, Music, LayoutGrid, File } from 'lucide-react';
+import { RefreshCw, HardDrive, Cloud, FileCode, Image, Play, Volume2, Zap, Archive } from 'lucide-react';
 import type { DiskStats, FolderStats } from '../../types';
 import { formatSize } from '../../utils/formatters';
 
@@ -24,56 +24,62 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
 
     const b = folderStats.breakdown;
     return [
-      { label: 'Documents', size: b.documents, sizeStr: formatSize(b.documents), color: 'bg-blue-500', icon: FileText },
-      { label: 'Photos', size: b.photos, sizeStr: formatSize(b.photos), color: 'bg-purple-500', icon: ImageIcon },
-      { label: 'Videos', size: b.videos, sizeStr: formatSize(b.videos), color: 'bg-red-500', icon: Video },
-      { label: 'Audio', size: b.audio, sizeStr: formatSize(b.audio), color: 'bg-pink-500', icon: Music },
-      { label: 'Applications', size: b.apps, sizeStr: formatSize(b.apps), color: 'bg-gray-700', icon: LayoutGrid },
-      { label: 'Other', size: b.other, sizeStr: formatSize(b.other), color: 'bg-yellow-500', icon: File },
+      { label: 'Documents', size: b.documents, sizeStr: formatSize(b.documents), color: 'bg-blue-500', icon: FileCode },
+      { label: 'Photos', size: b.photos, sizeStr: formatSize(b.photos), color: 'bg-purple-500', icon: Image },
+      { label: 'Videos', size: b.videos, sizeStr: formatSize(b.videos), color: 'bg-red-500', icon: Play },
+      { label: 'Audio', size: b.audio, sizeStr: formatSize(b.audio), color: 'bg-pink-500', icon: Volume2 },
+      { label: 'Applications', size: b.apps, sizeStr: formatSize(b.apps), color: 'bg-gray-700', icon: Zap },
+      { label: 'Archives', size: b.archives, sizeStr: formatSize(b.archives), color: 'bg-amber-500', icon: Archive },
+      { label: 'Other', size: b.other, sizeStr: formatSize(b.other), color: 'bg-yellow-500', icon: Cloud },
     ].filter((i) => i.size > 0);
   }, [folderStats, diskStats, isRoot]);
 
   const totalGraphSize = isRoot && diskStats ? diskStats.total_bytes : folderStats ? folderStats.total_size : 0;
 
-  const describeArc = (x: number, y: number, radius: number, startAngle: number, endAngle: number) => {
-    const startRad = ((startAngle - 180) * Math.PI) / 180;
-    const endRad = ((endAngle - 180) * Math.PI) / 180;
-    const x1 = x + radius * Math.cos(startRad);
-    const y1 = y + radius * Math.sin(startRad);
-    const x2 = x + radius * Math.cos(endRad);
-    const y2 = y + radius * Math.sin(endRad);
-    const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
-    return ['M', x1, y1, 'A', radius, radius, 0, largeArcFlag, 1, x2, y2].join(' ');
+  const getColorHex = (color: string): string => {
+    switch (color) {
+      case 'bg-blue-500': return '#3b82f6';
+      case 'bg-purple-500': return '#a855f7';
+      case 'bg-red-500': return '#ef4444';
+      case 'bg-pink-500': return '#ec4899';
+      case 'bg-gray-700': return '#374151';
+      case 'bg-amber-500': return '#f59e0b';
+      case 'bg-green-500': return '#22c55e';
+      case 'bg-yellow-500': return '#eab308';
+      default: return '#9ca3af';
+    }
+  };
+
+  const describeArc = (radius: number, startAngle: number, endAngle: number) => {
+    const gapAngle = 2; // 2 degree gap between segments
+    const adjustedEnd = endAngle - gapAngle;
+    
+    const startRad = (startAngle * Math.PI) / 180;
+    const endRad = (adjustedEnd * Math.PI) / 180;
+    
+    const x1 = 50 + radius * Math.cos(startRad);
+    const y1 = 50 + radius * Math.sin(startRad);
+    const x2 = 50 + radius * Math.cos(endRad);
+    const y2 = 50 + radius * Math.sin(endRad);
+    
+    const largeArcFlag = adjustedEnd - startAngle > 180 ? 1 : 0;
+    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
   };
 
   const segments = useMemo(() => {
     if (totalGraphSize === 0) return [];
-    let currentAngle = 0;
+    let currentAngle = 180; // Start at left (180°)
     return breakdown.map((item: any) => {
       const percentage = item.size / totalGraphSize;
-      const angleSpan = percentage * 180;
+      const angleSpan = percentage * 180; // Only 180° for semicircle
+      const nextAngle = currentAngle + angleSpan;
       const segment = {
         ...item,
-        path: describeArc(50, 50, 40, currentAngle, currentAngle + angleSpan),
+        path: describeArc(40, currentAngle, nextAngle),
         percentage: (percentage * 100).toFixed(1),
-        colorHex:
-          item.color === 'bg-blue-500'
-            ? '#3b82f6'
-            : item.color === 'bg-purple-500'
-            ? '#a855f7'
-            : item.color === 'bg-red-500'
-            ? '#ef4444'
-            : item.color === 'bg-pink-500'
-            ? '#ec4899'
-            : item.color === 'bg-gray-700'
-            ? '#374151'
-            : item.color === 'bg-green-500'
-            ? '#22c55e'
-            : item.color === 'bg-yellow-500'
-            ? '#eab308'
-            : '#9ca3af',
+        colorHex: getColorHex(item.color),
       };
-      currentAngle += angleSpan;
+      currentAngle = nextAngle;
       return segment;
     });
   }, [breakdown, totalGraphSize]);
@@ -93,9 +99,8 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
       </div>
 
       <div className="flex flex-col items-center mb-6 flex-shrink-0">
-        <div className="relative w-40 h-20 overflow-hidden mb-3 flex justify-center">
-          <svg viewBox="0 0 100 50" className="w-full h-full">
-            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#f3f4f6" strokeWidth="10" />
+        <div className="relative w-40 h-24 mb-3 flex justify-center items-start">
+          <svg viewBox="0 0 100 50" className="w-full h-full" style={{ overflow: 'visible' }}>
             {segments.map((seg: any, i: number) => (
               <path
                 key={i}
@@ -103,7 +108,8 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
                 fill="none"
                 stroke={seg.colorHex}
                 strokeWidth="10"
-                strokeLinecap="butt"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="transition-all duration-700 ease-out"
               />
             ))}

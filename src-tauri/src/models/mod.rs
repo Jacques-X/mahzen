@@ -42,6 +42,7 @@ pub struct FileTypeBreakdown {
     pub videos: u64,
     pub audio: u64,
     pub apps: u64,
+    pub archives: u64,
     pub other: u64,
 }
 

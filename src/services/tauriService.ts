@@ -15,6 +15,7 @@ export const tauriService = {
     return await invoke<FolderStats>('get_folder_stats', { path });
   },
 
+
   async getDiskStats(): Promise<DiskStats> {
     return await invoke<DiskStats>('get_disk_stats');
   },
@@ -38,6 +39,7 @@ export const tauriService = {
   async clearStatsCache(): Promise<void> {
     await invoke('clear_stats_cache');
   },
+
 
   window: {
     async close() {

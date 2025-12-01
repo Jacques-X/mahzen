@@ -7,7 +7,8 @@ pub fn get_file_type_category(extension: &str) -> &str {
         "pdf" | "doc" | "docx" | "txt" | "md" | "rtf" | "odt" | "pages" | "tex" | "wpd" 
         | "ods" | "xlr" | "xls" | "xlsx" | "csv" | "ppt" | "pptx" | "odp" | "key" 
         | "epub" | "mobi" | "azw" | "azw3" | "djvu" | "xps" | "oxps" | "ps" | "log" 
-        | "msg" | "eml" | "vcf" | "ics" => "documents",
+        | "msg" | "eml" | "vcf" | "ics"
+        | "py" | "js" | "ts" | "java" | "c" | "cpp" | "cc" | "cxx" | "h" | "hpp" | "rs" | "go" | "rb" | "php" | "swift" | "kt" | "scala" | "groovy" | "r" | "m" | "mm" | "pl" | "sh" | "bash" | "lua" | "vim" | "el" | "clj" | "ex" | "erl" | "hss" | "sql" | "vb" | "cs" | "fs" | "fsx" | "vhdl" | "verilog" => "documents",
         
         "jpg" | "jpeg" | "png" | "gif" | "svg" | "webp" | "bmp" | "tiff" | "tif" 
         | "ico" | "heic" | "heif" | "raw" | "cr2" | "nef" | "orf" | "sr2" | "arw" 
@@ -27,6 +28,8 @@ pub fn get_file_type_category(extension: &str) -> &str {
         "app" | "exe" | "dmg" | "pkg" | "deb" | "rpm" | "apk" | "ipa" | "msi" 
         | "appx" | "appimage" | "snap" | "flatpak" | "bin" | "run" | "bundle" 
         | "command" => "apps",
+
+        "zip" | "rar" | "7z" | "tar" | "gz" | "bz2" | "xz" | "iso" | "z" | "gzip" | "tgz" | "tbz" | "txz" | "lz" | "lzma" => "archives",
         
         _ => "other"
     }

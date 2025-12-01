@@ -7,7 +7,7 @@ use crate::models::FolderStats;
 pub static STATS_CACHE: Mutex<Option<HashMap<String, FolderStats>>> = Mutex::new(None);
 
 fn get_cache_path() -> Option<PathBuf> {
-    dirs::data_local_dir().map(|d| d.join("mahzen").join("folder_stats_cache.json"))
+    dirs::data_local_dir().map(|d| d.join("trove").join("folder_stats_cache.json"))
 }
 
 pub fn load_cache_from_disk() {

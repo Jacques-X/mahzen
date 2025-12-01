@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { LeftSidebar } from './components/sidebar/LeftSidebar';
 import { RightSidebar } from './components/sidebar/RightSidebar';
 import { MainContent } from './components/layout/MainContent';
@@ -66,19 +66,23 @@ export default function App() {
   // Load directory contents
   const loadDirectory = async (path: string) => {
     try {
-      const entries = await tauriService.readDirectory(path);
-      setFiles(entries);
       setIsScanning(true);
-
+      
+      // Load directory entries and stats in parallel
+      const [entries, stats] = await Promise.all([
+        tauriService.readDirectory(path),
+        path === '/'
+          ? tauriService.getDiskStats()
+          : tauriService.getFolderStats(path)
+      ]);
+      
+      setFiles(entries);
       if (path === '/') {
-        const stats = await tauriService.getDiskStats();
-        setDiskStats(stats);
-        setIsScanning(false);
+        setDiskStats(stats as any);
       } else {
-        const stats = await tauriService.getFolderStats(path);
-        setFolderStats(stats);
-        setIsScanning(false);
+        setFolderStats(stats as any);
       }
+      setIsScanning(false);
     } catch (error) {
       console.error('Load directory error:', error);
       setIsScanning(false);
@@ -122,7 +126,6 @@ export default function App() {
         const stats = await tauriService.getDiskStats();
         setDiskStats(stats);
       } else {
-        await tauriService.clearStatsCache();
         const stats = await tauriService.getFolderStats(navigation.currentPath);
         setFolderStats(stats);
       }

@@ -8,6 +8,7 @@ import {
   Trash2,
   Cloud,
   LayoutGrid,
+  Settings2Icon,
 } from 'lucide-react';
 import type { QuickPaths } from '../../types';
 import { WindowControls } from '../common/WindowControls';
@@ -30,11 +31,18 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
 }) => {
   return (
     <div style={{ width }} className="relative flex-shrink-0 flex flex-col group">
-      <div className="bg-white h-full rounded-3xl shadow-sm flex flex-col border border-gray-100 overflow-hidden">
+      <div className="bg-white h-full rounded-3xl shadow-xl flex flex-col border border-gray-100 overflow-hidden">
         <WindowControls />
 
-        <div data-tauri-drag-region className="h-14 flex items-center px-5 border-b border-gray-50/50">
-          <img src="/logo.png" alt="MAĦŻEN" className="h-7 w-auto object-contain" />
+        <div 
+          data-tauri-drag-region 
+          className="mt-6 flex items-center justify-center px-5 pb-4 border-b border-gray-50/50"
+        >
+          <img 
+            src="/logo v1.svg" 
+            className="h-12 w-auto object-contain" 
+            alt="App Logo"
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
@@ -97,6 +105,15 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
               </div>
             </>
           )}
+        </div>
+
+        <div className="p-3 border-t border-gray-50/50 bg-white z-10">
+          <NavItem
+            icon={<Settings2Icon size={18} />}
+            label="Settings"
+            active={currentPath === '/settings'}
+            onClick={() => onNavigate('/settings')}
+          />
         </div>
       </div>
 
