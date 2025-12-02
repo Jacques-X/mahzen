@@ -11,7 +11,7 @@ interface FileIconProps {
 
 export const FileIcon = React.memo<FileIconProps>(({ file, size, iconData }) => {
   if (file.is_dir) {
-    return <FolderOpen style={{ width: size, height: size, objectFit: 'contain' }} className="text-purple-600" />;
+    return <FolderOpen style={{ width: size, height: size, objectFit: 'contain' }} className="text-purple-500" />;
   }
 
   if (iconData) {

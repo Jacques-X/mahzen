@@ -47,9 +47,9 @@ export const SettingsView = ({}: SettingsViewProps) => {
           theme === 'light' ? 'border-gray-100' : 'border-gray-700'
         }`}>
           <div className="flex items-center gap-3">
-            <Settings size={24} className="text-blue-600" />
+            <Settings size={24} className={theme === 'light' ? 'text-purple-500' : 'text-purple-400'} />
             <h1 className={`text-xl font-semibold transition-colors ${
-              theme === 'light' ? 'text-gray-900' : 'text-white'
+              theme === 'light' ? 'text-purple-500' : 'text-purple-400'
             }`}>Settings</h1>
           </div>
         </div>
@@ -61,7 +61,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
               onClick={() => setSelectedCategory(category.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors 
                 ${selectedCategory === category.id
-                  ? (theme === 'light' ? 'bg-blue-50 text-blue-700 font-medium' : 'bg-blue-900/30 text-blue-300 font-medium')
+                  ? (theme === 'light' ? 'bg-purple-50 text-purple-500 font-medium' : 'bg-purple-950/30 text-purple-400 font-medium')
                   : (theme === 'light' ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-300 hover:bg-gray-700')
                 }`}
             >
@@ -102,7 +102,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                   {theme === 'light' ? (
                     <Sun size={20} className="text-yellow-500" />
                   ) : (
-                    <Moon size={20} className="text-blue-400" />
+                    <Moon size={20} className="text-purple-500" />
                   )}
                   <div>
                     <h3 className={`font-medium transition-colors ${
@@ -120,7 +120,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 <button
                   onClick={toggleTheme}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
+                    theme === 'dark' ? 'bg-purple-500' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   }`}
                 >
                   <span
@@ -163,7 +163,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 <button
                   onClick={() => setNotifications(!notifications)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notifications ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
+                    notifications ? 'bg-purple-500' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   }`}
                 >
                   <span
@@ -195,7 +195,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                   onClick={() => setSoundEnabled(!soundEnabled)}
                   disabled={!notifications}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    soundEnabled && notifications ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
+                    soundEnabled && notifications ? 'bg-purple-500' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   } ${!notifications ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <span
@@ -238,7 +238,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 <button
                   onClick={() => setAutoScan(!autoScan)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    autoScan ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
+                    autoScan ? 'bg-purple-500' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   }`}
                 >
                   <span
@@ -267,7 +267,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                     max="300"
                     value={scanInterval}
                     onChange={(e) => setScanInterval(e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors ${
                       theme === 'light' ? 'border-gray-300 bg-white text-gray-900' : 'border-gray-600 bg-gray-900 text-white'
                     }`}
                   />
@@ -281,13 +281,13 @@ export const SettingsView = ({}: SettingsViewProps) => {
 
               {/* Cache info */}
               <div className={`p-4 rounded-lg border transition-colors ${
-                theme === 'light' ? 'bg-blue-50 border-blue-200' : 'bg-blue-900/20 border-blue-900'
+                theme === 'light' ? 'bg-purple-50 border-purple-200' : 'bg-purple-900/20 border-purple-950'
               }`}>
                 <h4 className={`font-medium mb-2 transition-colors ${
-                  theme === 'light' ? 'text-blue-900' : 'text-blue-300'
+                  theme === 'light' ? 'text-purple-500' : 'text-purple-400'
                 }`}>Cache Information</h4>
                 <p className={`text-sm transition-colors ${
-                  theme === 'light' ? 'text-blue-800' : 'text-blue-200'
+                  theme === 'light' ? 'text-purple-500' : 'text-purple-400'
                 }`}>
                   The application caches file icons and folder statistics to improve
                   performance. Cache is automatically managed and cleared when needed.

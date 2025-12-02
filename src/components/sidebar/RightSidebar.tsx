@@ -64,7 +64,7 @@ export const RightSidebar = React.memo<RightSidebarProps>(({
                 : (theme === 'light' ? 'text-gray-400 hover:text-gray-600' : 'text-gray-500 hover:text-gray-300')
             }`}
           >
-            <InfoIcon size={12} className={activeTab === 'info' ? 'text-purple-500' : ''} />
+            <InfoIcon size={12} className={activeTab === 'info' ? 'text-purple-400' : 'text-purple-400'} />
             <span>Info</span>
           </button>
           <button
@@ -75,7 +75,7 @@ export const RightSidebar = React.memo<RightSidebarProps>(({
                 : (theme === 'light' ? 'text-gray-400 hover:text-gray-600' : 'text-gray-500 hover:text-gray-300')
             }`}
           >
-            <Activity size={12} className={activeTab === 'activity' ? 'text-purple-500' : ''} />
+            <Activity size={12} className={activeTab === 'activity' ? 'text-purple-400' : 'text-purple-400'} />
             <span>Activity</span>
           </button>
         </div>

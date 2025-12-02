@@ -41,7 +41,7 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
   const getColorHex = (color: string): string => {
     switch (color) {
       case 'bg-blue-500': return '#3b82f6';
-      case 'bg-purple-500': return '#a855f7';
+      case 'bg-purple-500': return '#C365F7';
       case 'bg-red-500': return '#ef4444';
       case 'bg-pink-500': return '#ec4899';
       case 'bg-gray-700': return '#374151';
@@ -132,7 +132,7 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
           <div className="flex items-center gap-4 mt-3">
             <div className="text-center">
               <div className={`text-base font-bold transition-colors ${
-                theme === 'light' ? 'text-purple-600' : 'text-purple-400'
+                theme === 'light' ? 'text-purple-500' : 'text-purple-500'
               }`}>{folderStats ? folderStats.file_count : 0}</div>
               <div className={`text-[10px] transition-colors ${
                 theme === 'light' ? 'text-gray-400' : 'text-gray-500'
@@ -177,7 +177,7 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
                   </div>
                 </div>
                 <div className={`text-xs font-bold transition-colors ${
-                  theme === 'light' ? 'text-purple-600' : 'text-purple-400'
+                  theme === 'light' ? 'text-purple-500' : 'text-purple-500'
                 }`}>{item.sizeStr}</div>
               </div>
             );

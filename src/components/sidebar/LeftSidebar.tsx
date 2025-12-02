@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  HomeIcon,
   Monitor,
   File,
   ArrowBigDownDash,
@@ -9,7 +8,10 @@ import {
   Cloud,
   LayoutGrid,
   Settings2Icon,
+  HardDrive,
+  Columns3,
 } from 'lucide-react';
+import { HomeIcon } from 'lucide-react'; 
 import type { QuickPaths } from '../../types';
 import { WindowControls } from '../common/WindowControls';
 import { NavItem } from '../common/NavItem';
@@ -56,12 +58,17 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
           {quickPaths && (
             <>
               <NavItem
-                icon={<HomeIcon size={18} />}
-                label="Home"
-                active={currentPath === quickPaths.home}
-                onClick={() => onNavigate(quickPaths.home)}
+                  icon={<HomeIcon size={18} />}
+                  label="Home"
+                  active={currentPath === '/custom-view'}
+                  onClick={() => onNavigate('/custom-view')}
               />
-
+              <NavItem
+                icon={<HardDrive size={18} />}
+                label="Root"
+                active={currentPath === '/'}
+                onClick={() => onNavigate('/')}
+              />
               <NavItem
                 icon={<LayoutGrid size={18} />}
                 label="Applications"

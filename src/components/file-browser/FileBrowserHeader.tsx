@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, LayoutGrid, List, MapPin } from 'lucide-react';
 import type { ViewMode } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
@@ -25,6 +25,23 @@ export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
   handleNavigate,
 }) => {
   const { theme } = useTheme();
+  const [inputValue, setInputValue] = useState(currentPath);
+
+  // Update inputValue when currentPath changes from outside (e.g., sidebar navigation)
+  useEffect(() => {
+    setInputValue(currentPath);
+  }, [currentPath]);
+
+  const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleNavigate(inputValue);
+      e.currentTarget.blur(); // Optional: unfocus input after navigation
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
 
   return (
     <div data-tauri-drag-region className={`h-20 flex items-center justify-between px-6 border-b transition-colors ${
@@ -59,14 +76,9 @@ export const FileBrowserHeader = React.memo<FileBrowserHeaderProps>(({
           }`} size={16} />
           <input
             type="text"
-            value={currentPath}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleNavigate((e.target as HTMLInputElement).value);
-              }
-            }}
-            onChange={() => {}} // Controlled component, value is set by state
-            readOnly
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleInputKeyPress}
             placeholder="Enter path..."
             className={`w-full pl-9 pr-4 py-2 border-none rounded-full text-sm focus:outline-none font-medium focus:ring-2 focus:ring-purple-100 transition-all ${
               theme === 'light' ? 'bg-gray-50 text-gray-600' : 'bg-gray-700 text-gray-300'
