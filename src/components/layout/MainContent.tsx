@@ -4,6 +4,7 @@ import { FileGrid } from '../file-browser/FileGrid';
 import { FileList } from '../file-browser/FileList';
 import { SettingsView } from '../settings/SettingsView';
 import type { FileInfo, ViewMode } from '../../types';
+import { useTheme } from '../../context/ThemeContext';
 
 interface MainContentProps {
   currentPath: string;
@@ -32,6 +33,7 @@ export const MainContent = React.memo(({
   handleOpenFile,
   iconCache,
 }: MainContentProps) => {
+  const { theme } = useTheme();
   
   // DEBUG: Check if MainContent is receiving the update
   console.log("MainContent Path:", currentPath);
@@ -46,7 +48,9 @@ export const MainContent = React.memo(({
   }
 
   return (
-    <div className="flex-1 min-w-0 rounded-3xl shadow-xl border flex flex-col overflow-hidden relative transition-colors bg-[#F9FAFB] border-gray-200/60">
+    <div className={`flex-1 min-w-0 rounded-3xl shadow-xl border flex flex-col overflow-hidden relative transition-colors ${
+      theme === 'light' ? 'bg-[#F9FAFB] border-gray-200/60' : 'bg-gray-900 border-gray-700/60'
+    }`}>
       <FileBrowserHeader
         currentPath={currentPath}
         viewMode={viewMode}
@@ -58,9 +62,13 @@ export const MainContent = React.memo(({
         handleNavigate={handleNavigate}
       />
 
-      <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6 custom-scrollbar transition-colors">
+      <div className={`flex-1 overflow-y-auto px-6 pb-6 pt-6 custom-scrollbar transition-colors ${
+        theme === 'light' ? '' : 'bg-gray-900'
+      }`}>
         {files.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center transition-colors text-gray-400">
+          <div className={`h-full flex flex-col items-center justify-center transition-colors ${
+            theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+          }`}>
             <p className="text-sm">This folder is empty</p>
           </div>
         ) : viewMode === 'grid' ? (

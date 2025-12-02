@@ -13,6 +13,7 @@ import {
 import type { QuickPaths } from '../../types';
 import { WindowControls } from '../common/WindowControls';
 import { NavItem } from '../common/NavItem';
+import { useTheme } from '../../context/ThemeContext';
 
 interface LeftSidebarProps {
   width: number;
@@ -29,18 +30,24 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
   onNavigate,
   currentPath,
 }) => {
+  const { theme } = useTheme();
+
   return (
     <div style={{ width }} className="relative flex-shrink-0 flex flex-col group">
-      <div className="h-full rounded-3xl shadow-xl flex flex-col border overflow-hidden transition-colors bg-white border-gray-100">
+      <div className={`h-full rounded-3xl shadow-xl flex flex-col border overflow-hidden transition-colors ${
+        theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+      }`}>
         <WindowControls />
 
         <div 
           data-tauri-drag-region 
-          className="mt-6 flex items-center justify-center px-5 pb-4 border-b transition-colors border-gray-50/50"
+          className={`mt-6 flex items-center justify-center px-5 pb-4 border-b transition-colors ${
+            theme === 'light' ? 'border-gray-50/50' : 'border-gray-700/50'
+          }`}
         >
           <img 
             src="/logo v1.svg" 
-            className="h-12 w-auto object-contain" 
+            className="h-12 w-auto object-contain"
             alt="App Logo"
           />
         </div>
@@ -107,7 +114,9 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
           )}
         </div>
 
-        <div className="p-3 border-t transition-colors border-gray-50/50 bg-white z-10">
+        <div className={`p-3 border-t transition-colors ${
+          theme === 'light' ? 'border-gray-50/50 bg-white' : 'border-gray-700/50 bg-gray-800'
+        } z-10`}>
           <NavItem
             icon={<Settings2Icon size={18} />}
             label="Settings"
@@ -121,7 +130,9 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
         className="absolute -right-3 top-10 bottom-10 w-6 flex items-center justify-center cursor-col-resize z-50 group-hover:opacity-100 opacity-0 transition-opacity"
         onMouseDown={onStartResize}
       >
-        <div className="w-1 h-12 bg-gray-300 rounded-full group-hover:bg-blue-400 transition-colors shadow-sm"></div>
+        <div className={`w-1 h-12 rounded-full transition-colors shadow-sm ${
+          theme === 'light' ? 'bg-gray-300 group-hover:bg-blue-400' : 'bg-gray-600 group-hover:bg-blue-600'
+        }`}></div>
       </div>
     </div>
   );

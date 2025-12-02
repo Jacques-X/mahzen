@@ -7,8 +7,10 @@ import { useNavigation } from './hooks/useNavigation';
 import { useIconCache } from './hooks/useIconCache';
 import { tauriService } from './services/tauriService';
 import type { FileInfo, QuickPaths, FolderStats, DiskStats, SystemStats, ViewMode, RightTabMode } from './types';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 
-export default function App() {
+function AppContent() {
+  const { theme } = useTheme();
   // Sidebar widths with resize hooks
   const leftSidebar = useResize(180, 180, 400);
   const rightSidebar = useResize(230, 230, 500);
@@ -207,9 +209,9 @@ export default function App() {
   return (
     <div
       data-tauri-drag-region
-      className={`flex h-screen w-full font-sans overflow-hidden p-3 gap-3 rounded-3xl border shadow-2xl transition-colors bg-gray-200 border-gray-400/20 ${
+      className={`flex h-screen w-full font-sans overflow-hidden p-3 gap-3 rounded-3xl border shadow-2xl transition-colors ${
         leftSidebar.isResizing || rightSidebar.isResizing ? 'cursor-col-resize select-none' : ''
-      }`}
+      } ${theme === 'light' ? 'bg-gray-200 border-gray-400/20' : 'bg-gray-800 border-gray-600/20'}`}
     >
       <LeftSidebar
         width={leftSidebar.width}
@@ -249,5 +251,13 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

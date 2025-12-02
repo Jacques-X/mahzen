@@ -7,7 +7,10 @@ import {
   Info,
   ChevronRight,
   Volume2,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 interface SettingCategory {
   id: string;
@@ -18,26 +21,36 @@ interface SettingCategory {
 interface SettingsViewProps {}
 
 export const SettingsView = ({}: SettingsViewProps) => {
-  const [selectedCategory, setSelectedCategory] = useState('notifications');
+  const { theme, toggleTheme } = useTheme();
+  const [selectedCategory, setSelectedCategory] = useState('appearance'); // Set default to appearance
   const [notifications, setNotifications] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [autoScan, setAutoScan] = useState(true);
   const [scanInterval, setScanInterval] = useState('30');
 
   const categories: SettingCategory[] = [
+    { id: 'appearance', name: 'Appearance', icon: <Moon size={20} /> },
     { id: 'notifications', name: 'Notifications', icon: <Bell size={20} /> },
     { id: 'storage', name: 'Storage', icon: <HardDrive size={20} /> },
     { id: 'about', name: 'About', icon: <Info size={20} /> },
   ];
 
   return (
-    <div className="flex h-full w-full rounded-3xl shadow-xl border transition-colors bg-[#F9FAFB] border-gray-200/60">
+    <div className={`flex h-full w-full rounded-3xl shadow-xl border transition-colors ${
+      theme === 'light' ? 'bg-[#F9FAFB] border-gray-200/60' : 'bg-gray-900 border-gray-700/60'
+    }`}>
       {/* Sidebar */}
-      <div className="w-64 border-r flex flex-col transition-colors bg-white border-gray-200/60">
-        <div className="p-6 border-b transition-colors border-gray-100">
+      <div className={`w-64 border-r flex flex-col transition-colors ${
+        theme === 'light' ? 'bg-white border-gray-200/60' : 'bg-gray-800 border-gray-700/60'
+      }`}>
+        <div className={`p-6 border-b transition-colors ${
+          theme === 'light' ? 'border-gray-100' : 'border-gray-700'
+        }`}>
           <div className="flex items-center gap-3">
             <Settings size={24} className="text-blue-600" />
-            <h1 className="text-xl font-semibold transition-colors text-gray-900">Settings</h1>
+            <h1 className={`text-xl font-semibold transition-colors ${
+              theme === 'light' ? 'text-gray-900' : 'text-white'
+            }`}>Settings</h1>
           </div>
         </div>
 
@@ -48,8 +61,8 @@ export const SettingsView = ({}: SettingsViewProps) => {
               onClick={() => setSelectedCategory(category.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors 
                 ${selectedCategory === category.id
-                  ? 'bg-blue-50 text-blue-700 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? (theme === 'light' ? 'bg-blue-50 text-blue-700 font-medium' : 'bg-blue-900/30 text-blue-300 font-medium')
+                  : (theme === 'light' ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-300 hover:bg-gray-700')
                 }`}
             >
               <div className="flex-shrink-0">{category.icon}</div>
@@ -64,7 +77,9 @@ export const SettingsView = ({}: SettingsViewProps) => {
           ))}
         </div>
 
-        <div className="p-4 border-t text-xs transition-colors border-gray-100 text-gray-500">
+        <div className={`p-4 border-t text-xs transition-colors ${
+          theme === 'light' ? 'border-gray-100 text-gray-500' : 'border-gray-700 text-gray-400'
+        }`}>
           <p>Version 1.0.0</p>
           <p>© 2025 Trove</p>
         </div>
@@ -72,20 +87,75 @@ export const SettingsView = ({}: SettingsViewProps) => {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar">
+        {selectedCategory === 'appearance' && (
+          <div className="w-full">
+            <h2 className={`text-2xl font-bold mb-6 transition-colors ${
+              theme === 'light' ? 'text-gray-900' : 'text-white'
+            }`}>Appearance</h2>
+
+            <div className="space-y-6">
+              {/* Dark Mode Toggle */}
+              <div className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
+                <div className="flex items-center gap-3">
+                  {theme === 'light' ? (
+                    <Sun size={20} className="text-yellow-500" />
+                  ) : (
+                    <Moon size={20} className="text-blue-400" />
+                  )}
+                  <div>
+                    <h3 className={`font-medium transition-colors ${
+                      theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>
+                      Dark Mode
+                    </h3>
+                    <p className={`text-sm transition-colors ${
+                      theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
+                      Toggle between light and dark themes
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={toggleTheme}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {selectedCategory === 'notifications' && (
           <div className="w-full">
-            <h2 className="text-2xl font-bold mb-6 transition-colors text-gray-900">Notifications</h2>
+            <h2 className={`text-2xl font-bold mb-6 transition-colors ${
+              theme === 'light' ? 'text-gray-900' : 'text-white'
+            }`}>Notifications</h2>
 
             <div className="space-y-6">
               {/* Enable notifications */}
-              <div className="flex items-center justify-between p-4 rounded-lg border transition-colors bg-white border-gray-100">
+              <div className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
                 <div className="flex items-center gap-3">
                   <Bell size={20} className="text-gray-600" />
                   <div>
-                    <h3 className="font-medium transition-colors text-gray-900">
+                    <h3 className={`font-medium transition-colors ${
+                      theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>
                       Enable Notifications
                     </h3>
-                    <p className="text-sm transition-colors text-gray-500">
+                    <p className={`text-sm transition-colors ${
+                      theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
                       Receive alerts for important events
                     </p>
                   </div>
@@ -93,7 +163,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 <button
                   onClick={() => setNotifications(!notifications)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notifications ? 'bg-blue-600' : 'bg-gray-200'
+                    notifications ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   }`}
                 >
                   <span
@@ -105,12 +175,18 @@ export const SettingsView = ({}: SettingsViewProps) => {
               </div>
 
               {/* Sound */}
-              <div className="flex items-center justify-between p-4 rounded-lg border transition-colors bg-white border-gray-100">
+              <div className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
                 <div className="flex items-center gap-3">
                   <Volume2 size={20} className="text-gray-600" />
                   <div>
-                    <h3 className="font-medium transition-colors text-gray-900">Notification Sound</h3>
-                    <p className="text-sm transition-colors text-gray-500">
+                    <h3 className={`font-medium transition-colors ${
+                      theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>Notification Sound</h3>
+                    <p className={`text-sm transition-colors ${
+                      theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
                       Play sound for notifications
                     </p>
                   </div>
@@ -119,7 +195,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                   onClick={() => setSoundEnabled(!soundEnabled)}
                   disabled={!notifications}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    soundEnabled && notifications ? 'bg-blue-600' : 'bg-gray-200'
+                    soundEnabled && notifications ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   } ${!notifications ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <span
@@ -135,18 +211,26 @@ export const SettingsView = ({}: SettingsViewProps) => {
 
         {selectedCategory === 'storage' && (
           <div className="w-full">
-            <h2 className="text-2xl font-bold mb-6 transition-colors text-gray-900">Storage</h2>
+            <h2 className={`text-2xl font-bold mb-6 transition-colors ${
+              theme === 'light' ? 'text-gray-900' : 'text-white'
+            }`}>Storage</h2>
 
             <div className="space-y-6">
               {/* Auto scan */}
-              <div className="flex items-center justify-between p-4 rounded-lg border transition-colors bg-white border-gray-100">
+              <div className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
                 <div className="flex items-center gap-3">
                   <Database size={20} className="text-gray-600" />
                   <div>
-                    <h3 className="font-medium transition-colors text-gray-900">
+                    <h3 className={`font-medium transition-colors ${
+                      theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>
                       Automatic Scanning
                     </h3>
-                    <p className="text-sm transition-colors text-gray-500">
+                    <p className={`text-sm transition-colors ${
+                      theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                    }`}>
                       Automatically scan folders for changes
                     </p>
                   </div>
@@ -154,7 +238,7 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 <button
                   onClick={() => setAutoScan(!autoScan)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    autoScan ? 'bg-blue-600' : 'bg-gray-200'
+                    autoScan ? 'bg-blue-600' : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-600')
                   }`}
                 >
                   <span
@@ -167,9 +251,13 @@ export const SettingsView = ({}: SettingsViewProps) => {
 
               {/* Scan interval */}
               {autoScan && (
-                <div className="p-4 rounded-lg border transition-colors bg-white border-gray-100">
+                <div className={`p-4 rounded-lg border transition-colors ${
+                  theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+                }`}>
                   <label className="block mb-2">
-                    <span className="text-sm font-medium transition-colors text-gray-900">
+                    <span className={`text-sm font-medium transition-colors ${
+                      theme === 'light' ? 'text-gray-900' : 'text-white'
+                    }`}>
                       Scan Interval (seconds)
                     </span>
                   </label>
@@ -179,18 +267,28 @@ export const SettingsView = ({}: SettingsViewProps) => {
                     max="300"
                     value={scanInterval}
                     onChange={(e) => setScanInterval(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors border-gray-300 bg-white text-gray-900"
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors ${
+                      theme === 'light' ? 'border-gray-300 bg-white text-gray-900' : 'border-gray-600 bg-gray-900 text-white'
+                    }`}
                   />
-                  <p className="text-xs mt-2 transition-colors text-gray-500">
+                  <p className={`text-xs mt-2 transition-colors ${
+                    theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                  }`}>
                     Interval between automatic folder scans
                   </p>
                 </div>
               )}
 
               {/* Cache info */}
-              <div className="p-4 rounded-lg border transition-colors bg-blue-50 border-blue-200">
-                <h4 className="font-medium mb-2 transition-colors text-blue-900">Cache Information</h4>
-                <p className="text-sm transition-colors text-blue-800">
+              <div className={`p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-blue-50 border-blue-200' : 'bg-blue-900/20 border-blue-900'
+              }`}>
+                <h4 className={`font-medium mb-2 transition-colors ${
+                  theme === 'light' ? 'text-blue-900' : 'text-blue-300'
+                }`}>Cache Information</h4>
+                <p className={`text-sm transition-colors ${
+                  theme === 'light' ? 'text-blue-800' : 'text-blue-200'
+                }`}>
                   The application caches file icons and folder statistics to improve
                   performance. Cache is automatically managed and cleared when needed.
                 </p>
@@ -201,23 +299,39 @@ export const SettingsView = ({}: SettingsViewProps) => {
 
         {selectedCategory === 'about' && (
           <div className="w-full">
-            <h2 className="text-2xl font-bold mb-6 transition-colors text-gray-900">About Trove</h2>
+            <h2 className={`text-2xl font-bold mb-6 transition-colors ${
+              theme === 'light' ? 'text-gray-900' : 'text-white'
+            }`}>About Trove</h2>
 
             <div className="space-y-6">
-              <div className="p-6 rounded-lg border text-center transition-colors bg-white border-gray-100">
+              <div className={`p-6 rounded-lg border text-center transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
                 <img
                   src="/logo v1.svg"
                   alt="Trove Logo"
                   className="h-24 w-auto mx-auto mb-4"
                 />
-                <h3 className="text-2xl font-bold mb-2 transition-colors text-gray-900">Trove</h3>
-                <p className="mb-4 transition-colors text-gray-600">A modern file storage manager</p>
-                <p className="text-sm transition-colors text-gray-500">Version 1.0.0</p>
+                <h3 className={`text-2xl font-bold mb-2 transition-colors ${
+                  theme === 'light' ? 'text-gray-900' : 'text-white'
+                }`}>Trove</h3>
+                <p className={`mb-4 transition-colors ${
+                  theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                }`}>A modern file storage manager</p>
+                <p className={`text-sm transition-colors ${
+                  theme === 'light' ? 'text-gray-500' : 'text-gray-400'
+                }`}>Version 1.0.0</p>
               </div>
 
-              <div className="p-4 rounded-lg border transition-colors bg-white border-gray-100">
-                <h3 className="font-medium mb-3 transition-colors text-gray-900">Features</h3>
-                <ul className="text-sm space-y-2 transition-colors text-gray-600">
+              <div className={`p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-white border-gray-100' : 'bg-gray-800 border-gray-700'
+              }`}>
+                <h3 className={`font-medium mb-3 transition-colors ${
+                  theme === 'light' ? 'text-gray-900' : 'text-white'
+                }`}>Features</h3>
+                <ul className={`text-sm space-y-2 transition-colors ${
+                  theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                }`}>
                   <li>✓ Fast file browsing with grid and list views</li>
                   <li>✓ Real-time folder and disk statistics</li>
                   <li>✓ System monitoring and process management</li>
@@ -226,9 +340,15 @@ export const SettingsView = ({}: SettingsViewProps) => {
                 </ul>
               </div>
 
-              <div className="p-4 rounded-lg border transition-colors bg-gray-50 border-gray-200">
-                <h3 className="font-medium mb-2 transition-colors text-gray-900">Built with</h3>
-                <p className="text-sm transition-colors text-gray-600">
+              <div className={`p-4 rounded-lg border transition-colors ${
+                theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-gray-700 border-gray-600'
+              }`}>
+                <h3 className={`font-medium mb-2 transition-colors ${
+                  theme === 'light' ? 'text-gray-900' : 'text-white'
+                }`}>Built with</h3>
+                <p className={`text-sm transition-colors ${
+                  theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                }`}>
                   React • TypeScript • Tailwind CSS • Tauri • Rust
                 </p>
               </div>

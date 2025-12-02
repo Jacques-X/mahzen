@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { RefreshCw, HardDrive, Cloud, FileCode, Image, Play, Volume2, Zap, Archive } from 'lucide-react';
 import type { DiskStats, FolderStats } from '../../types';
 import { formatSize } from '../../utils/formatters';
+import { useTheme } from '../../context/ThemeContext';
 
 interface InfoViewProps {
   isRoot: boolean;
@@ -12,6 +13,7 @@ interface InfoViewProps {
 }
 
 export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderStats, isScanning, onRescan }) => {
+  const { theme } = useTheme();
   const breakdown = useMemo(() => {
     if (isRoot && diskStats) {
       return [
@@ -87,11 +89,16 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
-        <h3 className="text-sm font-semibold text-gray-700">{isRoot ? 'Disk Usage' : 'Folder Details'}</h3>
+        <h3 className={`text-sm font-semibold transition-colors ${
+          theme === 'light' ? 'text-gray-700' : 'text-gray-200'
+        }`}>{isRoot ? 'Disk Usage' : 'Folder Details'}</h3>
         <button
           onClick={onRescan}
           disabled={isScanning}
-          className={`p-2 rounded-lg transition-all ${isScanning ? 'bg-gray-100 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+          className={`p-2 rounded-lg transition-all ${isScanning 
+            ? (theme === 'light' ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-700 cursor-not-allowed') 
+            : (theme === 'light' ? 'hover:bg-gray-100' : 'hover:bg-gray-700')
+          }`}
           title="Rescan"
         >
           <RefreshCw size={16} className={`text-gray-500 ${isScanning ? 'animate-spin' : ''}`} />
@@ -115,18 +122,32 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
             ))}
           </svg>
         </div>
-        <div className="text-2xl font-bold text-gray-800">{formatSize(totalGraphSize)}</div>
-        <div className="text-xs text-gray-400">Total Size</div>
+        <div className={`text-2xl font-bold transition-colors ${
+          theme === 'light' ? 'text-gray-800' : 'text-white'
+        }`}>{formatSize(totalGraphSize)}</div>
+        <div className={`text-xs transition-colors ${
+          theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+        }`}>Total Size</div>
         {!isRoot && (
           <div className="flex items-center gap-4 mt-3">
             <div className="text-center">
-              <div className="text-base font-bold text-purple-600">{folderStats ? folderStats.file_count : 0}</div>
-              <div className="text-[10px] text-gray-400">Files</div>
+              <div className={`text-base font-bold transition-colors ${
+                theme === 'light' ? 'text-purple-600' : 'text-purple-400'
+              }`}>{folderStats ? folderStats.file_count : 0}</div>
+              <div className={`text-[10px] transition-colors ${
+                theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+              }`}>Files</div>
             </div>
-            <div className="w-px h-6 bg-gray-200"></div>
+            <div className={`w-px h-6 transition-colors ${
+              theme === 'light' ? 'bg-gray-200' : 'bg-gray-600'
+            }`}></div>
             <div className="text-center">
-              <div className="text-base font-bold text-blue-600">{folderStats ? folderStats.folder_count : 0}</div>
-              <div className="text-[10px] text-gray-400">Folders</div>
+              <div className={`text-base font-bold transition-colors ${
+                theme === 'light' ? 'text-blue-600' : 'text-blue-400'
+              }`}>{folderStats ? folderStats.folder_count : 0}</div>
+              <div className={`text-[10px] transition-colors ${
+                theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+              }`}>Folders</div>
             </div>
           </div>
         )}
@@ -134,7 +155,9 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
 
       <div className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1">
         {breakdown.length === 0 ? (
-          <div className="text-center text-gray-400 text-xs mt-4">{isScanning ? 'Scanning...' : 'No data available'}</div>
+          <div className={`text-center text-xs mt-4 transition-colors ${
+            theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+          }`}>{isScanning ? 'Scanning...' : 'No data available'}</div>
         ) : (
           breakdown.map((item: any, idx: number) => {
             const segment = segments.find((s) => s.label === item.label);
@@ -145,11 +168,17 @@ export const InfoView: React.FC<InfoViewProps> = ({ isRoot, diskStats, folderSta
                     <item.icon size={12} className={item.color.replace('bg-', 'text-')} />
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-gray-700">{item.label}</div>
-                    <div className="text-[9px] text-gray-400">{segment ? segment.percentage : '0'}%</div>
+                    <div className={`text-xs font-semibold transition-colors ${
+                      theme === 'light' ? 'text-gray-700' : 'text-gray-200'
+                    }`}>{item.label}</div>
+                    <div className={`text-[9px] transition-colors ${
+                      theme === 'light' ? 'text-gray-400' : 'text-gray-500'
+                    }`}>{segment ? segment.percentage : '0'}%</div>
                   </div>
                 </div>
-                <div className="text-xs font-bold text-purple-600">{item.sizeStr}</div>
+                <div className={`text-xs font-bold transition-colors ${
+                  theme === 'light' ? 'text-purple-600' : 'text-purple-400'
+                }`}>{item.sizeStr}</div>
               </div>
             );
           })
