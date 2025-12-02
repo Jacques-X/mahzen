@@ -40,7 +40,6 @@ export const tauriService = {
     await invoke('clear_stats_cache');
   },
 
-
   window: {
     async close() {
       const window = getCurrentWindow();

@@ -45,9 +45,9 @@ export const RightSidebar = React.memo<RightSidebarProps>(({
         <div className="w-1 h-12 bg-gray-300 rounded-full group-hover:bg-blue-400 transition-colors shadow-md"></div>
       </div>
 
-      <div className="bg-white h-full rounded-3xl shadow-xl border border-gray-100 flex flex-col p-6 overflow-hidden">
+      <div className="h-full rounded-3xl shadow-xl border flex flex-col p-6 overflow-hidden transition-colors bg-white border-gray-100">
         {/* Toggle Switch */}
-        <div className="flex bg-gray-100 p-1 rounded-xl mb-4 shrink-0">
+        <div className="flex p-1 rounded-xl mb-4 shrink-0 transition-colors bg-gray-100">
           <button
             onClick={() => onTabChange('info')}
             className={`flex-1 flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-medium transition-all ${

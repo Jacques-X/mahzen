@@ -33,5 +33,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "fs": {
+      "all": true
+    },
+    "shell": {
+      "all": true
+    }
   }
 }

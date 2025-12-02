@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
+@layer base {
+  /* Removed body styling to allow theme to be controlled by html.dark */
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: transparent !important; /* Force transparency */
+  /* background-color: transparent !important; */
 }

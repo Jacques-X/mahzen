@@ -31,12 +31,12 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
 }) => {
   return (
     <div style={{ width }} className="relative flex-shrink-0 flex flex-col group">
-      <div className="bg-white h-full rounded-3xl shadow-xl flex flex-col border border-gray-100 overflow-hidden">
+      <div className="h-full rounded-3xl shadow-xl flex flex-col border overflow-hidden transition-colors bg-white border-gray-100">
         <WindowControls />
 
         <div 
           data-tauri-drag-region 
-          className="mt-6 flex items-center justify-center px-5 pb-4 border-b border-gray-50/50"
+          className="mt-6 flex items-center justify-center px-5 pb-4 border-b transition-colors border-gray-50/50"
         >
           <img 
             src="/logo v1.svg" 
@@ -107,7 +107,7 @@ export const LeftSidebar = React.memo<LeftSidebarProps>(({
           )}
         </div>
 
-        <div className="p-3 border-t border-gray-50/50 bg-white z-10">
+        <div className="p-3 border-t transition-colors border-gray-50/50 bg-white z-10">
           <NavItem
             icon={<Settings2Icon size={18} />}
             label="Settings"

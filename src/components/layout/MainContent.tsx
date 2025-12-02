@@ -1,6 +1,8 @@
+import React from 'react';
 import { FileBrowserHeader } from '../file-browser/FileBrowserHeader';
 import { FileGrid } from '../file-browser/FileGrid';
 import { FileList } from '../file-browser/FileList';
+import { SettingsView } from '../settings/SettingsView';
 import type { FileInfo, ViewMode } from '../../types';
 
 interface MainContentProps {
@@ -17,8 +19,7 @@ interface MainContentProps {
   iconCache: Record<string, string>;
 }
 
-// REMOVED: React.memo wrapper
-export const MainContent = ({
+export const MainContent = React.memo(({
   currentPath,
   files,
   viewMode,
@@ -35,8 +36,17 @@ export const MainContent = ({
   // DEBUG: Check if MainContent is receiving the update
   console.log("MainContent Path:", currentPath);
 
+  // Render settings view
+  if (currentPath === '/settings') {
+    return (
+      <div className="flex-1 min-w-0">
+        <SettingsView />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1 min-w-0 bg-[#F9FAFB] rounded-3xl shadow-xl border border-gray-200/60 flex flex-col overflow-hidden relative">
+    <div className="flex-1 min-w-0 rounded-3xl shadow-xl border flex flex-col overflow-hidden relative transition-colors bg-[#F9FAFB] border-gray-200/60">
       <FileBrowserHeader
         currentPath={currentPath}
         viewMode={viewMode}
@@ -48,9 +58,9 @@ export const MainContent = ({
         handleNavigate={handleNavigate}
       />
 
-      <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-6 pb-6 pt-6 custom-scrollbar transition-colors">
         {files.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-gray-400">
+          <div className="h-full flex flex-col items-center justify-center transition-colors text-gray-400">
             <p className="text-sm">This folder is empty</p>
           </div>
         ) : viewMode === 'grid' ? (
@@ -71,4 +81,6 @@ export const MainContent = ({
       </div>
     </div>
   );
-};
+});
+
+MainContent.displayName = 'MainContent';

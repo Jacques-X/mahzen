@@ -7,7 +7,7 @@ mod cache;
 
 use cache::stats_cache::{load_cache_from_disk, save_cache_to_disk};
 use commands::{file_commands, system_commands, cache_commands};
-use std::thread;
+use std::thread; // Removed Window, Emitter from tauri import
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -43,7 +43,7 @@ pub fn run() {
             system_commands::kill_process,
             cache_commands::clear_stats_cache,
         ])
-        .on_window_event(|_window, event| {
+        .on_window_event(|_window, event| { // Changed window to _window
             if let tauri::WindowEvent::CloseRequested { .. } = event {
                 save_cache_to_disk();
             }

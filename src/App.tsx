@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { LeftSidebar } from './components/sidebar/LeftSidebar';
 import { RightSidebar } from './components/sidebar/RightSidebar';
 import { MainContent } from './components/layout/MainContent';
@@ -90,33 +90,33 @@ export default function App() {
   };
 
   // Navigation handlers
-  const handleNavigate = (path: string) => {
+  const handleNavigate = useCallback((path: string) => {
     navigation.navigate(path);
     loadDirectory(path);
-  };
+  }, [navigation]);
 
-  const handleGoBack = () => {
+  const handleGoBack = useCallback(() => {
     const path = navigation.goBack();
     if (path !== null) {
       loadDirectory(path);
     }
-  };
+  }, [navigation]);
 
-  const handleGoForward = () => {
+  const handleGoForward = useCallback(() => {
     const path = navigation.goForward();
     if (path !== null) {
       loadDirectory(path);
     }
-  };
+  }, [navigation]);
 
   // File operations
-  const handleOpenFile = async (path: string) => {
+  const handleOpenFile = useCallback(async (path: string) => {
     try {
       await tauriService.openFile(path);
     } catch (e) {
       console.error('Failed to open file:', e);
     }
-  };
+  }, []);
 
   // Rescan folder/disk stats
   const handleRescan = async () => {
@@ -207,7 +207,7 @@ export default function App() {
   return (
     <div
       data-tauri-drag-region
-      className={`flex h-screen w-full bg-gray-200 font-sans overflow-hidden p-3 gap-3 rounded-3xl border border-gray-400/20 shadow-2xl ${
+      className={`flex h-screen w-full font-sans overflow-hidden p-3 gap-3 rounded-3xl border shadow-2xl transition-colors bg-gray-200 border-gray-400/20 ${
         leftSidebar.isResizing || rightSidebar.isResizing ? 'cursor-col-resize select-none' : ''
       }`}
     >
@@ -233,19 +233,21 @@ export default function App() {
         iconCache={iconCache}
       />
 
-      <RightSidebar
-        width={rightSidebar.width}
-        onStartResize={rightSidebar.startResize}
-        folderStats={folderStats}
-        diskStats={diskStats}
-        currentPath={navigation.currentPath}
-        onRescan={handleRescan}
-        isScanning={isScanning}
-        systemStats={systemStats}
-        onKillProcess={handleKillProcess}
-        activeTab={activeRightTab}
-        onTabChange={handleRightTabChange}
-      />
+      {navigation.currentPath !== '/settings' && (
+        <RightSidebar
+          width={rightSidebar.width}
+          onStartResize={rightSidebar.startResize}
+          folderStats={folderStats}
+          diskStats={diskStats}
+          currentPath={navigation.currentPath}
+          onRescan={handleRescan}
+          isScanning={isScanning}
+          systemStats={systemStats}
+          onKillProcess={handleKillProcess}
+          activeTab={activeRightTab}
+          onTabChange={handleRightTabChange}
+        />
+      )}
     </div>
   );
 }
