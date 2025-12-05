@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 use crate::models::{FileInfo, FolderStats, FileTypeBreakdown};
 use crate::utils::file_helpers::{get_file_type_category, calculate_dir_size_recursive, is_bundle};
@@ -18,7 +18,7 @@ pub fn read_directory_entries(path: &str) -> Result<Vec<FileInfo>, String> {
         let path_buf = entry.path();
         let name = entry.file_name().to_string_lossy().to_string();
 
-        if name.starts_with('.') {
+        if name.starts_with(".") {
             continue;
         }
 
@@ -170,4 +170,27 @@ fn categorize_files_recursive(path: &Path, stats: &mut FolderStats) {
             }
         }
     }
+}
+
+pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> Result<(), String> {
+    let src_path = src.as_ref();
+    let dst_path = dst.as_ref();
+
+    fs::create_dir_all(dst_path).map_err(|e| e.to_string())?;
+
+    for entry in fs::read_dir(src_path).map_err(|e| e.to_string())? {
+        let entry = entry.map_err(|e| e.to_string())?;
+        let path = entry.path();
+        let file_name = path.file_name().ok_or("Invalid file name")?;
+        let dest_path = dst_path.join(file_name);
+
+        if path.is_dir() {
+            copy_dir_all(&path, &dest_path)?;
+        } else {
+            fs::copy(&path, &dest_path)
+                .map(|_| ()) // map to () to satisfy Result<(), String>
+                .map_err(|e| e.to_string())?;
+        }
+    }
+    Ok(())
 }

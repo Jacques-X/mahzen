@@ -32,6 +32,22 @@ export const tauriService = {
     await invoke('open_file', { path });
   },
 
+  async deletePath(path: string): Promise<void> {
+    await invoke('delete_path', { path });
+  },
+
+  async duplicatePath(path: string): Promise<void> {
+    await invoke('duplicate_path', { path });
+  },
+
+  async renamePath(oldPath: string, newPath: string): Promise<void> {
+    await invoke('rename_path', { oldPath, newPath });
+  },
+
+  async showInFolder(path: string): Promise<void> {
+    await invoke('show_in_folder', { path });
+  },
+
   async killProcess(pid: number): Promise<void> {
     await invoke('kill_process', { pid });
   },

@@ -18,6 +18,7 @@ interface MainContentProps {
   handleNavigate: (path: string) => void;
   handleOpenFile: (path: string) => void;
   iconCache: Record<string, string>;
+  refreshFiles: () => void; // Added refreshFiles prop
 }
 
 export const MainContent = React.memo(({
@@ -32,6 +33,7 @@ export const MainContent = React.memo(({
   handleNavigate,
   handleOpenFile,
   iconCache,
+  refreshFiles,
 }: MainContentProps) => {
   const { theme } = useTheme();
   
@@ -77,6 +79,7 @@ export const MainContent = React.memo(({
             handleNavigate={handleNavigate}
             handleOpenFile={handleOpenFile}
             iconCache={iconCache}
+            refreshFiles={refreshFiles}
           />
         ) : (
           <FileList
@@ -84,6 +87,7 @@ export const MainContent = React.memo(({
             handleNavigate={handleNavigate}
             handleOpenFile={handleOpenFile}
             iconCache={iconCache}
+            refreshFiles={refreshFiles}
           />
         )}
       </div>

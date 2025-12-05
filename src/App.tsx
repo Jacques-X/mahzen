@@ -91,6 +91,11 @@ function AppContent() {
     }
   };
 
+  // Refresh files in current directory
+  const refreshFiles = useCallback(() => {
+    loadDirectory(navigation.currentPath);
+  }, [navigation.currentPath]);
+
   // Navigation handlers
   const handleNavigate = useCallback((path: string) => {
     navigation.navigate(path);
@@ -233,6 +238,7 @@ function AppContent() {
         handleNavigate={handleNavigate}
         handleOpenFile={handleOpenFile}
         iconCache={iconCache}
+        refreshFiles={refreshFiles} // Pass refreshFiles prop
       />
 
       {navigation.currentPath !== '/settings' && (

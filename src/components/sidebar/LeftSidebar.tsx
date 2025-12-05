@@ -9,7 +9,6 @@ import {
   LayoutGrid,
   Settings2Icon,
   HardDrive,
-  Columns3,
 } from 'lucide-react';
 import { HomeIcon } from 'lucide-react'; 
 import type { QuickPaths } from '../../types';
